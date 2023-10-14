@@ -15,7 +15,7 @@ namespace SoundCutterLibrary
 		private int _lastPosition = 0;
 		private bool lastEmpty = true;
 
-		public float threshold = 0.0f;
+		public float threshold = 0.1f;
 
 		public AudioCutter(WaveStream audioInput, Stream audioOutput)
 		{
@@ -30,7 +30,7 @@ namespace SoundCutterLibrary
 			{
 				if (lastEmpty)
 				{
-					foundPosition = FindAudio();
+					foundPosition = AudioSearch();
 					if (foundPosition == -1)
 					{
 						break;
@@ -39,7 +39,7 @@ namespace SoundCutterLibrary
 				}
 				else
 				{
-					foundPosition = FindEmptyAudio();
+					foundPosition = AudioSearch(true);
 					CaptureAudioIsland(_lastPosition, foundPosition);
 					lastEmpty = true;
 				}
@@ -66,58 +66,34 @@ namespace SoundCutterLibrary
 			}
 		}
 
-		private int FindEmptyAudio()
-		{
-			byte[] buffer = new byte[1024];
-			while (_audioInput.Position < _audioInput.Length)
-			{
-				int bytesRequired = (int)(_audioInput.Length - _audioInput.Position);
-				if (bytesRequired > 0)
-				{
-					int bytesToRead = Math.Min(bytesRequired, buffer.Length);
-					int bytesRead = _audioInput.Read(buffer, 0, bytesToRead);
-					if (bytesRead > 0)
-					{
-						int mid = 0;
-						foreach (byte b in buffer)
-						{
-							mid += Math.Abs(b);
-						}
-						if (mid / bytesRead < threshold)
-						{
-							return (int)_audioInput.Position;
-						}
-					}
-				}
-				
-			}
-			return -1;
-		}
 
-		private int FindAudio()
+		private int AudioSearch(bool isSearhingForEmpty = false)
 		{
 			byte[] buffer = new byte[1024];
-			while (_audioInput.Position < _audioInput.Length)
+			WaveBuffer nbuffer = new(buffer);
+			
+			while (_audioInput.Position < _audioInput.Length - 1)
 			{
-				int bytesRequired = (int)(_audioInput.Length - _audioInput.Position);
-				if (bytesRequired > 0)
+
+				int readPull = Math.Min((int)(_audioInput.Length - _audioInput.Position), buffer.Length);
+				int bytesComplitedRead = _audioInput.Read(buffer, 0, readPull);
+				if (bytesComplitedRead > 0)
 				{
-					int bytesToRead = Math.Min(bytesRequired, buffer.Length);
-					int bytesRead = _audioInput.Read(buffer, 0, bytesToRead);
-					if (bytesRead > 0)
+
+					float midSignal = 0.0f;
+					for (int i = 0; i < bytesComplitedRead / 4; i++)
 					{
-						int mid = 0;
-						foreach (byte b in buffer)
-						{
-							mid += Math.Abs(b);
-						}
-						if (mid / bytesRead >= threshold)
-						{
-							return (int)_audioInput.Position;
-						}
+						float sample = nbuffer.FloatBuffer[i];
+
+						midSignal += sample;
+					}
+					if ((Math.Abs(midSignal) / bytesComplitedRead >= threshold && !isSearhingForEmpty) || (Math.Abs(midSignal) / bytesComplitedRead < threshold && isSearhingForEmpty))
+					{
+						return (int)_audioInput.Position;
 					}
 				}
 				
+
 			}
 			return -1;
 		}
