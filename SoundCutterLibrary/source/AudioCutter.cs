@@ -15,5 +15,17 @@ namespace SoundCutterLibrary
 			
 		}
 
+		public void Read()
+		{ 
+
+		}
+
+		public void Process()
+		{
+
+		}
+
+		public float State => 0.0f;
+
 	}
 }
