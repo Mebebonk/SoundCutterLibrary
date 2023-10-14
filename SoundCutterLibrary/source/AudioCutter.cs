@@ -15,7 +15,7 @@ namespace SoundCutterLibrary
 		private int _lastPosition = 0;
 		private bool lastEmpty = true;
 
-		public float threshold = 0.2f;
+		public float threshold = 0.0f;
 
 		public AudioCutter(WaveStream audioInput, Stream audioOutput)
 		{
@@ -25,21 +25,23 @@ namespace SoundCutterLibrary
 
 		public void Process()
 		{
+			int foundPosition;
 			while (true)
 			{
-				int foundPosition;
 				if (lastEmpty)
 				{
-					foundPosition = FindAudio(_lastPosition);
+					foundPosition = FindAudio();
 					if (foundPosition == -1)
 					{
 						break;
 					}
+					lastEmpty = false;
 				}
 				else
 				{
-					foundPosition = FindEmptyAudio(_lastPosition);
+					foundPosition = FindEmptyAudio();
 					CaptureAudioIsland(_lastPosition, foundPosition);
+					lastEmpty = true;
 				}
 				_lastPosition = foundPosition;
 			}
@@ -64,13 +66,12 @@ namespace SoundCutterLibrary
 			}
 		}
 
-		private int FindEmptyAudio(int searchStartPosition)
+		private int FindEmptyAudio()
 		{
 			byte[] buffer = new byte[1024];
-			long audioLength = _audioInput.Length;
-			while (_audioInput.Position < audioLength - 1)
+			while (_audioInput.Position < _audioInput.Length)
 			{
-				int bytesRequired = (int)(audioLength - _audioInput.Position);
+				int bytesRequired = (int)(_audioInput.Length - _audioInput.Position);
 				if (bytesRequired > 0)
 				{
 					int bytesToRead = Math.Min(bytesRequired, buffer.Length);
@@ -80,25 +81,25 @@ namespace SoundCutterLibrary
 						int mid = 0;
 						foreach (byte b in buffer)
 						{
-							mid += b;
+							mid += Math.Abs(b);
 						}
 						if (mid / bytesRead < threshold)
 						{
-							return (int)_audioInput.Position - (buffer.Length - 1);
+							return (int)_audioInput.Position;
 						}
-					}					
+					}
 				}
+				
 			}
 			return -1;
 		}
 
-		private int FindAudio(int searchStartPosition)
+		private int FindAudio()
 		{
 			byte[] buffer = new byte[1024];
-			long audioLength = _audioInput.Length;
-			while (_audioInput.Position < audioLength - 1)
+			while (_audioInput.Position < _audioInput.Length)
 			{
-				int bytesRequired = (int)(audioLength - _audioInput.Position);
+				int bytesRequired = (int)(_audioInput.Length - _audioInput.Position);
 				if (bytesRequired > 0)
 				{
 					int bytesToRead = Math.Min(bytesRequired, buffer.Length);
@@ -108,18 +109,19 @@ namespace SoundCutterLibrary
 						int mid = 0;
 						foreach (byte b in buffer)
 						{
-							mid += b;
+							mid += Math.Abs(b);
 						}
 						if (mid / bytesRead >= threshold)
 						{
-							return (int)_audioInput.Position - (buffer.Length - 1);
+							return (int)_audioInput.Position;
 						}
 					}
 				}
+				
 			}
 			return -1;
 		}
-		public float State => _lastPosition / _audioInput.Length;
+		public float State => _audioInput.Position / _audioInput.Length;
 
 	}
 }
