@@ -15,16 +15,18 @@ namespace SoundCutterCLI
 				"test.wav"
 			};
 
-			Task task = api.ProcessFile(args[0], args[1], (float progress) => Console.WriteLine(progress), out Action callback);
+			ulong index = api.ProcessFile(args[0], args[1]);
 
-            while (!task.IsCompleted)
+            while (!api.IsCompleted(index))
             {
-                callback();
+                Console.WriteLine(api.GetProgress(index));
 
                 Thread.Sleep(1000);
             }
 
-			callback();
+			Console.WriteLine(1.0f);
+
+            api.Remove(index);
 		}
     }
 }
