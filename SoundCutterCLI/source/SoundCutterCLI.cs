@@ -1,10 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using SoundCutterLibrary;
+﻿using SoundCutterLibrary;
 
 namespace SoundCutterCLI
 {
-    internal class SoundCutterCLI
+	internal class SoundCutterCLI
     {
         static void Main(string[] args)
         {

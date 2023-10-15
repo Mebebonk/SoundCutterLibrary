@@ -1,26 +1,16 @@
-﻿using NAudio.MediaFoundation;
-using NAudio.Wave;
-using System;
+﻿using NAudio.Wave;
+using System.Collections.Concurrent;
 
 namespace SoundCutterLibrary
 {
 	public class CutterAPI
 	{
-		private struct TaskInformation
-		{
-			public AudioCutter cutter;
-			public Task task;
-		}
-
 		public ulong ProcessFile(string inputPath, string outputPath)
 		{
 			WaveStream inputStream = new MediaFoundationReader(inputPath);
-			TaskInformation task = new TaskInformation();
+			TaskInformation task = new(new(inputStream, new WaveFileWriter(File.Open(outputPath, FileMode.Create), inputStream.WaveFormat)));
 
-			task.cutter = new(inputStream, new WaveFileWriter(File.Open(outputPath, FileMode.Create), inputStream.WaveFormat));
-			task.task = Task.Run(task.cutter.Process);
-
-			_tasks.Add(_index, task);
+			_tasks.TryAdd(_index, task);
 
 			return _index++;
 		}
@@ -32,7 +22,7 @@ namespace SoundCutterLibrary
 
 		public void Remove(ulong index)
 		{
-			_tasks.Remove(index);
+			_tasks.Remove(index, out TaskInformation _);
 		}
 
 		public float GetProgress(ulong index)
@@ -40,7 +30,19 @@ namespace SoundCutterLibrary
 			return _tasks[index].cutter.State;
 		}
 
-		private readonly Dictionary<ulong, TaskInformation> _tasks = new();
+		private readonly ConcurrentDictionary<ulong, TaskInformation> _tasks = new();
 		private ulong _index = 0;
+
+		private struct TaskInformation
+		{
+			public AudioCutter cutter;
+			public Task task;
+
+			public TaskInformation(AudioCutter cutter)
+			{
+				this.cutter = cutter;
+				task = Task.Run(cutter.Process);
+			}
+		}
 	}
 }
