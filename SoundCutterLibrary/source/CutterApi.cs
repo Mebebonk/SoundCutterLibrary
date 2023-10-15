@@ -8,10 +8,9 @@ namespace SoundCutterLibrary
 	{
 		public Task ProcessFile(string inputPath, string outputPath, Action<float> progressCallback, out Action callProgressCallback)
 		{
-			using WaveStream inputStream = new MediaFoundationReader(inputPath);
-			using Stream outputStream = File.OpenWrite(outputPath);
+			WaveStream inputStream = new MediaFoundationReader(inputPath);
 			IProgress<AudioCutter> progress = new Progress<AudioCutter>((AudioCutter cutter) => progressCallback(cutter.State));
-			AudioCutter cutter = new AudioCutter(inputStream, new WaveFileWriter(outputStream, inputStream.WaveFormat));
+			AudioCutter cutter = new(inputStream, new WaveFileWriter(File.OpenWrite(outputPath), inputStream.WaveFormat));
 
 			callProgressCallback = () => progress.Report(cutter);
 
