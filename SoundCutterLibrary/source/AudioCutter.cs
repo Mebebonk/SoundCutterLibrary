@@ -25,6 +25,7 @@ namespace SoundCutterLibrary
 
 		public void Process()
 		{
+
 			int foundPosition;
 			while (true)
 			{
@@ -62,7 +63,12 @@ namespace SoundCutterLibrary
 					{
 						_audioOutput.Write(buffer, 0, bytesRead);
 					}
+					else
+					{
+						return;
+					}
 				}
+
 			}
 		}
 
@@ -72,11 +78,10 @@ namespace SoundCutterLibrary
 			byte[] buffer = new byte[1024];
 			WaveBuffer nbuffer = new(buffer);
 			
-			while (_audioInput.Position < _audioInput.Length - 1)
+			while (true)
 			{
 
-				int readPull = Math.Min((int)(_audioInput.Length - _audioInput.Position), buffer.Length);
-				int bytesComplitedRead = _audioInput.Read(buffer, 0, readPull);
+				int bytesComplitedRead = _audioInput.Read(buffer, 0, buffer.Length);
 				if (bytesComplitedRead > 0)
 				{
 
@@ -92,6 +97,10 @@ namespace SoundCutterLibrary
 						return (int)_audioInput.Position;
 					}
 				}
+				else
+				{
+					break;
+				}
 				
 
 			}
@@ -99,5 +108,12 @@ namespace SoundCutterLibrary
 		}
 		public float State => _audioInput.Position / _audioInput.Length;
 
+		~AudioCutter()
+		{
+			_audioInput.Dispose();
+			_audioOutput.Dispose();
+		}
 	}
+
+	
 }
