@@ -9,14 +9,13 @@ namespace SoundCutterCLI
         static void Main(string[] args)
         {
             CutterAPI api = new();
-            Action callback;
-            args = new string[2]
-            {
-                "REC20230902203639.mp3",
-                "test.wav"
-            };
+			args = new string[2]
+			{
+				"REC20230902203639.mp3",
+				"test.wav"
+			};
 
-            Task task = api.ProcessFile(args[0], args[1], (float progress) => Console.WriteLine(progress), out callback);
+			Task task = api.ProcessFile(args[0], args[1], (float progress) => Console.WriteLine(progress), out Action callback);
 
             while (!task.IsCompleted)
             {
@@ -24,6 +23,8 @@ namespace SoundCutterCLI
 
                 Thread.Sleep(1000);
             }
-        }
+
+			callback();
+		}
     }
 }
