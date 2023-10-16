@@ -8,7 +8,15 @@ namespace SoundCutterLibrary
 		public ulong ProcessFile(string inputPath, string outputPath)
 		{
 			WaveStream inputStream = new MediaFoundationReader(inputPath);
-			TaskInformation task = new(new(inputStream, new WaveFileWriter(File.Open(outputPath, FileMode.Create), inputStream.WaveFormat)));
+			TaskInformation task = new
+			(
+				new
+				(
+					inputStream,
+					new WaveFileWriter(File.Open(outputPath, FileMode.Create), inputStream.WaveFormat),
+					new WaveFileWriter(File.Open($"cut_{outputPath}", FileMode.Create), inputStream.WaveFormat)
+				)
+			);
 
 			_tasks.TryAdd(_index, task);
 

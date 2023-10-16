@@ -1,26 +1,24 @@
 ﻿using NAudio.Wave;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace SoundCutterLibrary
 {
 	internal class AudioCutter
 	{
-		private WaveStream _audioInput;
-		private Stream _audioOutput;
-		private Stream _cutAudio;
+		private readonly WaveStream _audioInput;
+		private readonly Stream _audioOutput;
+		private readonly Stream _cutAudio;
 
-		public float threshold = float.MaxValue * 0.0001f;
+		[Settings<float>("threshold", float.MaxValue * 0.0001f)]
+		public readonly float _threshold;
 
 		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio)
 		{
 			_audioInput = audioInput;
-			_audioOutput = audioOutput;
+			_audioOutput = audioOutput; 
 			_cutAudio = cutAudio;
+
+			_threshold = GetType()!.GetField("_threshold")!.GetCustomAttribute<SettingsAttribute<float>>()!.Value;
 		}
 
 		public void Process()
@@ -61,11 +59,11 @@ namespace SoundCutterLibrary
 							midSignal += Math.Abs(sample) / bytesComplitedRead;
 						}
 					}
-					if (midSignal >= threshold)
+					if (midSignal >= _threshold)
 					{
 						_audioOutput.Write(buffer);
 					}
-					else if (midSignal < threshold)
+					else
 					{
 						_cutAudio.Write(buffer);
 					}
