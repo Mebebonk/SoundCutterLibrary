@@ -26,6 +26,7 @@ namespace SoundCutterLibrary
 			while (SearchAudio())
 			_audioInput.Dispose();
 			_audioOutput.Dispose();
+			_cutAudio.Dispose();
 		}
 
 		private bool SearchAudio()
