@@ -5,7 +5,9 @@ VisualStudioVersion = 17.7.34202.233
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundCutterLibrary", "SoundCutterLibrary\SoundCutterLibrary.csproj", "{40660D8D-4941-4471-A197-7EFF61798A52}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCutterCLI", "SoundCutterCLI\SoundCutterCLI.csproj", "{3388DC3B-A55B-44B6-8EAB-52D70CAA9CF9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundCutterCLI", "SoundCutterCLI\SoundCutterCLI.csproj", "{3388DC3B-A55B-44B6-8EAB-52D70CAA9CF9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCutterUI", "AudioCutterUI\SoundCutterUI.csproj", "{CAF468EF-9056-4EAC-9B9F-437C008E4370}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{3388DC3B-A55B-44B6-8EAB-52D70CAA9CF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3388DC3B-A55B-44B6-8EAB-52D70CAA9CF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3388DC3B-A55B-44B6-8EAB-52D70CAA9CF9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAF468EF-9056-4EAC-9B9F-437C008E4370}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAF468EF-9056-4EAC-9B9F-437C008E4370}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAF468EF-9056-4EAC-9B9F-437C008E4370}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAF468EF-9056-4EAC-9B9F-437C008E4370}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
