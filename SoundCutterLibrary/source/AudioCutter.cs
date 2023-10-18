@@ -8,17 +8,14 @@ namespace SoundCutterLibrary
 		private readonly WaveStream _audioInput;
 		private readonly Stream _audioOutput;
 		private readonly Stream _cutAudio;
-
-		[Settings<float>("threshold", float.MaxValue * 0.0001f)]
 		public readonly float _threshold;
 
-		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio)
+		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio, float threshold)
 		{
 			_audioInput = audioInput;
 			_audioOutput = audioOutput; 
 			_cutAudio = cutAudio;
-
-			_threshold = GetType()!.GetField("_threshold")!.GetCustomAttribute<SettingsAttribute<float>>()!.Value;
+			_threshold = threshold;
 		}
 
 		public void Process()

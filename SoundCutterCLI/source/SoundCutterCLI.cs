@@ -13,7 +13,7 @@ namespace SoundCutterCLI
 				"test.wav"
 			};
 
-			ulong index = api.ProcessFile(args[0], args[1]);
+			ulong index = api.ProcessFile(args[0], args[1], 0.5f);
 
             while (!api.IsCompleted(index))
             {

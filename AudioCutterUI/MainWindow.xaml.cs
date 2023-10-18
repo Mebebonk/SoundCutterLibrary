@@ -17,6 +17,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using SoundCutterLibrary;
+using System.Reflection;
+using System.IO;
+using System.ComponentModel;
 
 namespace SoundCutterUI
 {
@@ -26,10 +29,16 @@ namespace SoundCutterUI
 	public partial class MainWindow : Window
 	{
 		private readonly SoundCutterUIFilePathsManager filePathManager;
+		private readonly CutterAPI _api = new();
+
+
+		[Settings<float>("threshold", float.MaxValue * 0.0001f)]
+		public readonly float _threshold;
 
 		public MainWindow()
 		{
 			InitializeComponent();
+			_threshold = GetType()!.GetField("_threshold")!.GetCustomAttribute<SettingsAttribute<float>>()!.Value;
 			filePathManager = new SoundCutterUIFilePathsManager();
 			audioThreshold.Value = 50;
 			fileList.ItemsSource = filePathManager._observableFiles;
@@ -37,7 +46,7 @@ namespace SoundCutterUI
 
 		private void SelectFiles(object sender, RoutedEventArgs e)
 		{
-			OpenFileDialog openFileDialog = new OpenFileDialog
+			OpenFileDialog openFileDialog = new ()
 			{
 				Multiselect = true,
 				Filter = "Audio|*.aac;*.mp3;*.wav"
@@ -48,6 +57,16 @@ namespace SoundCutterUI
 
 		private void StartProcessFiles(object sender, RoutedEventArgs e)
 		{
+			foreach (var file in filePathManager._files.Keys)
+			{
+				_api.ProcessFile(file, file, _threshold);
+			}
+
+		}
+
+		void MainWindow_Close(object sender, CancelEventArgs e)
+		{
+			File.Open("settings.json", FileMode.Create);
 			
 		}
 	}

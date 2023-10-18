@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SoundCutterUI"
         mc:Ignorable="d"
+        Closing="MainWindow_Close"
         Title="AudioCutter" SizeToContent="WidthAndHeight">
     <Border Margin="5">
         <Grid>
