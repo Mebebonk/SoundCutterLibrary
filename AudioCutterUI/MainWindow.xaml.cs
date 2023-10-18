@@ -42,7 +42,7 @@ namespace SoundCutterUI
 				Multiselect = true,
 				Filter = "Audio|*.aac;*.mp3;*.wav"
 			};
-			if (openFileDialog.ShowDialog() == true) filePathManager.AddFilePaths(openFileDialog.FileNames);
+			if ((bool)openFileDialog.ShowDialog()) filePathManager.AddFilePaths(openFileDialog.FileNames);
 
 		}
 

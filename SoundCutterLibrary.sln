@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34202.233
@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundCutterLibrary", "Sound
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundCutterCLI", "SoundCutterCLI\SoundCutterCLI.csproj", "{3388DC3B-A55B-44B6-8EAB-52D70CAA9CF9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundCutterUI", "AudioCutterUI\SoundCutterUI.csproj", "{CAF468EF-9056-4EAC-9B9F-437C008E4370}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoundCutterUI", "AudioCutterUI\SoundCutterUI.csproj", "{CAF468EF-9056-4EAC-9B9F-437C008E4370}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
