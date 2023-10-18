@@ -8,25 +8,43 @@
         Title="AudioCutter" SizeToContent="WidthAndHeight">
     <Border Margin="5">
         <Grid>
-            <TextBlock Grid.Column="0"
-                       Grid.Row="0"
-                       Text="Сначала выбери файл / файлы:"/>
-            <Button Grid.Column="2"
-                    Grid.Row="0"
-                    Content="..." 
-                    HorizontalAlignment="Stretch"                  
+            <GroupBox Grid.Column="0"
+                      Header="Настройка"
+                      VerticalAlignment="Top">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"
+                        Grid.Row="0"
+                        Text="Сначала выбери файл / файлы:"/>
+                    <Button Grid.Column="2"
+                        Grid.Row="0"
+                        Content="..." 
+                        HorizontalAlignment="Stretch"                  
                     />
-            <GridSplitter Grid.Column="0"
-                          Grid.Row="1"
-                          Grid.ColumnSpan="2"
-                          ShowsPreview="True" 
-                          Height="10"
-                          Visibility="Hidden"/>
-            <TextBlock Grid.Column="0"
-                       Grid.Row="2"
-                       Text="Затем выстави порог аудио:"
-                       VerticalAlignment="Center"/>
-            <Slider x:Name="audioThreshold" 
+                    <GridSplitter Grid.Column="0"
+                        Grid.Row="1"
+                        Grid.ColumnSpan="2"
+                        ShowsPreview="True" 
+                        Height="10"
+                        Visibility="Hidden"/>
+                    <TextBlock Grid.Column="0"
+                        Grid.Row="2"
+                        Text="Затем выстави порог аудио:"
+                        VerticalAlignment="Center"/>
+                    <Slider x:Name="audioThreshold" 
                         Grid.Column="2" 
                         Grid.Row="2" 
                         Orientation="Horizontal" 
@@ -38,80 +56,85 @@
                         TickFrequency="4"
                         TickPlacement="TopLeft"
                         Margin="5"/>
-            <GridSplitter Grid.Column="0"
-              Grid.ColumnSpan="2"
-              Grid.Row="3" 
-              ShowsPreview="False" 
-              Height="10"
-              Visibility="Hidden"/>
-            <Grid Grid.Column="0"
-                  Grid.Row="4">
-                <TextBlock Grid.Column="0" 
-                           Grid.Row="0"
-                           Text="Далее задай префикс:"/>
-                <TextBlock Text="Так будут выглядеть файлы:" Grid.Row="1"/>
-                <Grid Grid.Row="2">
-                    <TextBlock Text="готовый файл:" Grid.Column="0" Grid.Row="0"/>
-                    <TextBlock Text="пустой файл:" Grid.Column="0" Grid.Row="1"/>
-                    <TextBlock Text="префикс_названиефайла" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0"/>
-                    <TextBlock Text="cut_префикс_названиефайла" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1"/>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-                </Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-            </Grid>
-            <TextBox Grid.Row="4" 
-                     Grid.Column="2" 
-                     HorizontalAlignment="Stretch" 
-                     VerticalAlignment="Center"                     
+                    <GridSplitter Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="3" 
+                        ShowsPreview="False" 
+                        Height="10"
+                        Visibility="Hidden"/>
+                    <Grid Grid.Column="0"
+                        Grid.Row="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" 
+                            Grid.Row="0"
+                            Text="Далее задай префикс:"/>
+                        <TextBlock Text="Так будут выглядеть файлы:" Grid.Row="1" Foreground="Gray"/>
+                        <Grid Grid.Row="2">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="готовый файл:" Grid.Column="0" Grid.Row="0" Foreground="Gray"/>
+                            <TextBlock Text="пустой файл:" Grid.Column="0" Grid.Row="1" Foreground="Gray"/>
+                            <TextBlock Text="префикс_названиефайла" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="0" Foreground="Gray"/>
+                            <TextBlock Text="cut_префикс_названиефайла" HorizontalAlignment="Right" Grid.Column="1" Grid.Row="1" Foreground="Gray"/>
+                        </Grid>
+                    </Grid>
+                    <TextBox Grid.Row="4" 
+                        Grid.Column="2" 
+                        HorizontalAlignment="Stretch" 
+                        VerticalAlignment="Center"                     
                      />
-            <GridSplitter Grid.Column="0"
-              Grid.ColumnSpan="2"
-              Grid.Row="5" 
-              ShowsPreview="False" 
-              Height="10"
-              Visibility="Hidden"/>
-            <TextBlock Grid.Column="0"
-                       Grid.Row="6"
-                       Text="В конце запусти обработку:"/>
-            <Button Grid.Column="2"
-                    Grid.Row="6"
-                    Content="Старт" 
-                    HorizontalAlignment="Stretch"/>
-            <GridSplitter Grid.Column="1"
-                          Grid.RowSpan="5"
-                          ShowsPreview="False"
-                          Width="10" 
-                          Visibility="Hidden"/>
+                    <GridSplitter Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Grid.Row="5" 
+                        ShowsPreview="False" 
+                        Height="10"
+                        Visibility="Hidden"/>
+                    <TextBlock Grid.Column="0"
+                        Grid.Row="6"
+                        Text="В конце запусти обработку:"/>
+                    <Button Grid.Column="2"
+                        Grid.Row="6"
+                        Content="Старт" 
+                        HorizontalAlignment="Stretch"/>
+                    <GridSplitter Grid.Column="1"
+                        Grid.RowSpan="5"
+                        ShowsPreview="False"
+                        Width="10" 
+                        Visibility="Hidden"/>
+                </Grid>
+            </GroupBox>
+            <GroupBox Grid.Column="1"
+                      Grid.RowSpan="3"
+                      Header="Файлы">
+            </GroupBox>
+            <GroupBox Grid.Row="1" Header="Прогресс">
+                <ProgressBar MinHeight="20" Maximum="1"/>
+            </GroupBox>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="auto"/>
             </Grid.ColumnDefinitions>
         </Grid>
+
     </Border>
 </Window>
