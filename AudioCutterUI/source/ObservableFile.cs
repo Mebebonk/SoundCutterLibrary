@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoundCutterLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +9,34 @@ namespace AudioCutterUI
 {
 	internal class ObservableFile
 	{
-		public string fileName {get;set;}
-		public float progressValue {get;set;}
+		public string FileName { get; set; }
 
-		public ObservableFile(string fileName, float progressValue)
+		private CutterAPI _api;
+		private ulong _id;
+
+		public ObservableFile(string fileName)
 		{
-			this.fileName = fileName.Split('\\').Last();
-			this.progressValue = progressValue;
+			this.FileName = fileName.Split('\\').Last();
 		}
+		public float ProgressValue 
+		{
+			get
+			{
+				if (_api == null)
+				{
+					return 0.0f;
+				}
+				return _api.GetProgress(_id) * 100;
+			}
+			set { }
+		}
+
+		public void SetApi(CutterAPI api, ulong id)
+		{
+			_api = api;
+			_id = id;
+		}
+
 	}
 }
+

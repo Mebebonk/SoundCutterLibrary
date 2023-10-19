@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NAudio.Wave;
+using SoundCutterLibrary;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -9,20 +11,29 @@ namespace AudioCutterUI
 {
 	internal class SoundCutterUIFilePathsManager
 	{
-		public readonly Dictionary<string, ObservableFile> _files = new Dictionary<string, ObservableFile>();
-		public readonly ObservableCollection<ObservableFile> _observableFiles = new ObservableCollection<ObservableFile>();
+		public readonly Dictionary<string, ObservableFile> _files = new();
+		public readonly ObservableCollection<ObservableFile> _observableFiles = new();
 
 		public void AddFilePaths(string[] filePaths)
 		{
 			foreach (var path in filePaths)
 			{
-				if (!_files.Keys.Contains<string>(path))
+				if (!_files.ContainsKey(path))
 				{
-					ObservableFile file = new ObservableFile(path, 0.0f);
+					ObservableFile file = new(path);
 					_observableFiles.Add(file);
 					_files.Add(path, file);
 				}
 			}
+		}
+
+		public void LaunchFile(string filePath, CutterAPI api, ulong id)
+		{
+			_files[filePath].SetApi(api, id);
+		}
+		public void RemoveFilePath(string filePath) 
+		{ 
+			_files.Remove(filePath);
 		}
 	}
 }

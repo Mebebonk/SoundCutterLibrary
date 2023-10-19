@@ -20,6 +20,8 @@ using SoundCutterLibrary;
 using System.Reflection;
 using System.IO;
 using System.ComponentModel;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SoundCutterUI
 {
@@ -33,20 +35,29 @@ namespace SoundCutterUI
 
 
 		[Settings<float>("threshold", float.MaxValue * 0.0001f)]
-		public readonly float _threshold;
+		public float _threshold;
+
+		[Settings<string>("prefix", "new_")]
+		public string _prefix;
+
 
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			_prefix = GetType()!.GetField("_prefix")!.GetCustomAttribute<SettingsAttribute<string>>()!.Value;
 			_threshold = GetType()!.GetField("_threshold")!.GetCustomAttribute<SettingsAttribute<float>>()!.Value;
+
+			audioThreshold.Value = _threshold;
+			prefixBox.Text = _prefix;
+
 			filePathManager = new SoundCutterUIFilePathsManager();
-			audioThreshold.Value = 50;
 			fileList.ItemsSource = filePathManager._observableFiles;
 		}
 
 		private void SelectFiles(object sender, RoutedEventArgs e)
 		{
-			OpenFileDialog openFileDialog = new ()
+			OpenFileDialog openFileDialog = new()
 			{
 				Multiselect = true,
 				Filter = "Audio|*.aac;*.mp3;*.wav"
@@ -59,15 +70,37 @@ namespace SoundCutterUI
 		{
 			foreach (var file in filePathManager._files.Keys)
 			{
-				_api.ProcessFile(file, file, _threshold);
+				string newName = "gug_" + file.Split('\\').Last();
+				string oldName = file.Split('\\').Last();
+				filePathManager.LaunchFile(file, _api, _api.ProcessFile(file, $"{file.Replace(oldName, newName)}", $"{file.Replace(oldName, $"silent_{newName}")}", _threshold));
 			}
 
 		}
 
 		void MainWindow_Close(object sender, CancelEventArgs e)
 		{
-			File.Open("settings.json", FileMode.Create);
-			
+			SettingsAssistant settingsData = new()
+			{
+				prefix = _prefix,
+				threshold = _threshold
+			};
+
+			string json = JsonSerializer.Serialize(settingsData);
+			var file = File.Open("settings.json", FileMode.Create);
+			StreamWriter fileStream = new(file);
+			fileStream.Write(json);
+			fileStream.Close();
+
+		}
+
+		private void PrefixBox_TextChanged(object sender, TextChangedEventArgs e)
+		{
+			_prefix = prefixBox.Text;
+		}
+
+		private void AudioThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+		{
+			_threshold = (float)audioThreshold.Value;
 		}
 	}
 }
