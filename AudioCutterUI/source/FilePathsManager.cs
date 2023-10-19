@@ -14,15 +14,15 @@ namespace AudioCutterUI
 		public readonly Dictionary<string, ObservableFile> _files = new();
 		public readonly ObservableCollection<ObservableFile> _observableFiles = new();
 
-		public void AddFilePaths(string[] filePaths)
+		public void AddFilePaths(string[] filePaths, Action callback)
 		{
 			foreach (var path in filePaths)
 			{
 				if (!_files.ContainsKey(path))
 				{
-					ObservableFile file = new(path);
+					ObservableFile file = new(path, callback);
 					_observableFiles.Add(file);
-					_files.Add(path, file);
+					_files.Add(path, file);					
 				}
 			}
 		}

@@ -35,12 +35,14 @@ namespace SoundCutterUI
 		private readonly CutterAPI _api = new();
 
 
-		[Settings<float>("threshold", float.MaxValue * 0.0001f)]
+		[Settings<float>("threshold", 0.2f)]
 		public float _threshold;
 
 		[Settings<string>("prefix", "new_")]
 		public string _prefix;
 
+		[Settings<string>("outPath", "")]
+		public string _outPath;
 
 		public MainWindow()
 		{
@@ -48,22 +50,36 @@ namespace SoundCutterUI
 
 			_prefix = GetType()!.GetField("_prefix")!.GetCustomAttribute<SettingsAttribute<string>>()!.Value;
 			_threshold = GetType()!.GetField("_threshold")!.GetCustomAttribute<SettingsAttribute<float>>()!.Value;
+			_outPath = GetType()!.GetField("_outPath")!.GetCustomAttribute<SettingsAttribute<string>>()!.Value;
 
 			audioThreshold.Value = _threshold;
 			prefixBox.Text = _prefix;
+			outPathText.Text = _outPath; 
 
 			filePathManager = new FilePathsManager();
 			fileList.ItemsSource = filePathManager._observableFiles;
 		}
 
+		private void SelectFolder(object sender, RoutedEventArgs e)
+		{
+			using var fbd = new FolderBrowserDialog();
+			fbd.SelectedPath = _outPath;
+			DialogResult result = fbd.ShowDialog();
+			if (result == System.Windows.Forms.DialogResult.OK)
+			{
+				_outPath = fbd.SelectedPath;
+				outPathText.Text = _outPath;
+			}
+		}
+
 		private void SelectFiles(object sender, RoutedEventArgs e)
 		{
-            Microsoft.Win32.OpenFileDialog openFileDialog = new()
+			Microsoft.Win32.OpenFileDialog openFileDialog = new()
 			{
 				Multiselect = true,
 				Filter = "Audio|*.aac;*.mp3;*.wav"
 			};
-			if ((bool)openFileDialog.ShowDialog()) filePathManager.AddFilePaths(openFileDialog.FileNames);
+			if ((bool)openFileDialog.ShowDialog()) filePathManager.AddFilePaths(openFileDialog.FileNames, UpdateMainProgress);
 
 		}
 
@@ -71,14 +87,24 @@ namespace SoundCutterUI
 		{
 			if (filePathManager._files.Keys.Count == 0)
 			{
-                System.Windows.Forms.MessageBox.Show("Добавь файлы");				
+				System.Windows.Forms.MessageBox.Show("Добавь файлы");
 				return;
 			}
 			foreach (var file in filePathManager._files.Keys)
 			{
-				string newName = _prefix + file.Split('\\').Last();
-				string oldName = file.Split('\\').Last();
-				filePathManager.LaunchFile(file, _api, _api.ProcessFile(file, $"{file.Replace(oldName, newName)}", $"{file.Replace(oldName, $"silent_{newName}")}", _threshold));
+				if (!filePathManager._files[file].IsFileRunning())
+				{
+					string oldName = file.Split('\\').Last();
+					string newName = _prefix + oldName;
+					string silentName = $"silent_{newName}";
+					while (_outPath == "")
+					{
+						SelectFolder(sender, e);
+					}
+					string path = _outPath + "\\";
+					
+					filePathManager.LaunchFile(file, _api, _api.ProcessFile(file, path + newName, path + silentName, _threshold, filePathManager._files[file].UpdateProgress));
+				}
 			}
 
 		}
@@ -88,7 +114,8 @@ namespace SoundCutterUI
 			SettingsAssistant settingsData = new()
 			{
 				prefix = _prefix,
-				threshold = _threshold
+				threshold = _threshold,
+				outPath = _outPath
 			};
 
 			string json = JsonSerializer.Serialize(settingsData);
@@ -114,6 +141,23 @@ namespace SoundCutterUI
 		private void DeleteFileFromList(object sender, RoutedEventArgs e)
 		{
 			filePathManager.RemoveFilePath((sender as FrameworkElement).DataContext as ObservableFile);
+		}
+
+		private void UpdateMainProgress()
+		{
+			List<float> progresses = new();
+			foreach (var file in filePathManager._observableFiles)
+			{
+				progresses.Add(file.ProgressValue);
+			}
+			float summ = 0;
+			foreach (float a in progresses)
+			{
+				summ += a;
+			}
+
+			mainProgress.Value = summ / progresses.Count;
+
 		}
 	}
 }

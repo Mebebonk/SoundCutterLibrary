@@ -8,25 +8,27 @@ namespace SoundCutterLibrary
 		private readonly WaveStream _audioInput;
 		private readonly Stream _audioOutput;
 		private readonly Stream _cutAudio;
-		public readonly float _threshold;
+		private readonly float _threshold;
+		private readonly Action<float> _callback;
 
-		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio, float threshold)
+		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio, float threshold, Action<float> callback)
 		{
 			_audioInput = audioInput;
-			_audioOutput = audioOutput; 
+			_audioOutput = audioOutput;
 			_cutAudio = cutAudio;
-			_threshold = threshold;
+			_threshold = (float)Math.Pow(10, (20 * Math.Log10(float.MaxValue) * (double)threshold) * 0.05);
+			_callback = callback;
 		}
 
 		public void Process()
 		{
-			while (SearchAudio())
+			SearchAudio();
 			_audioInput.Dispose();
 			_audioOutput.Dispose();
 			_cutAudio.Dispose();
 		}
 
-		private bool SearchAudio()
+		private void SearchAudio()
 		{
 
 			byte[] buffer = new byte[_audioInput.WaveFormat.SampleRate / 4];
@@ -65,6 +67,7 @@ namespace SoundCutterLibrary
 					{
 						_cutAudio.Write(buffer);
 					}
+					_callback((float)_audioInput.Position / _audioInput.Length);
 				}
 				else
 				{
@@ -72,10 +75,7 @@ namespace SoundCutterLibrary
 				}
 
 			}
-			return false;
 		}
-
-		public float State => (float)_audioInput.Position / _audioInput.Length;
 
 	}
 
