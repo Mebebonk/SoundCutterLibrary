@@ -22,6 +22,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Forms;
 
 namespace SoundCutterUI
 {
@@ -30,7 +31,7 @@ namespace SoundCutterUI
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		private readonly SoundCutterUIFilePathsManager filePathManager;
+		private readonly FilePathsManager filePathManager;
 		private readonly CutterAPI _api = new();
 
 
@@ -51,13 +52,13 @@ namespace SoundCutterUI
 			audioThreshold.Value = _threshold;
 			prefixBox.Text = _prefix;
 
-			filePathManager = new SoundCutterUIFilePathsManager();
+			filePathManager = new FilePathsManager();
 			fileList.ItemsSource = filePathManager._observableFiles;
 		}
 
 		private void SelectFiles(object sender, RoutedEventArgs e)
 		{
-			OpenFileDialog openFileDialog = new()
+            Microsoft.Win32.OpenFileDialog openFileDialog = new()
 			{
 				Multiselect = true,
 				Filter = "Audio|*.aac;*.mp3;*.wav"
@@ -68,9 +69,14 @@ namespace SoundCutterUI
 
 		private void StartProcessFiles(object sender, RoutedEventArgs e)
 		{
+			if (filePathManager._files.Keys.Count == 0)
+			{
+                System.Windows.Forms.MessageBox.Show("Добавь файлы");				
+				return;
+			}
 			foreach (var file in filePathManager._files.Keys)
 			{
-				string newName = "gug_" + file.Split('\\').Last();
+				string newName = _prefix + file.Split('\\').Last();
 				string oldName = file.Split('\\').Last();
 				filePathManager.LaunchFile(file, _api, _api.ProcessFile(file, $"{file.Replace(oldName, newName)}", $"{file.Replace(oldName, $"silent_{newName}")}", _threshold));
 			}
@@ -96,11 +102,18 @@ namespace SoundCutterUI
 		private void PrefixBox_TextChanged(object sender, TextChangedEventArgs e)
 		{
 			_prefix = prefixBox.Text;
+			cutDesc.Text = $"{_prefix}названиефайла";
+			silentDesc.Text = $"silent_{_prefix}названиефайла";
 		}
 
 		private void AudioThreshold_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
 		{
 			_threshold = (float)audioThreshold.Value;
+		}
+
+		private void DeleteFileFromList(object sender, RoutedEventArgs e)
+		{
+			filePathManager.RemoveFilePath((sender as FrameworkElement).DataContext as ObservableFile);
 		}
 	}
 }

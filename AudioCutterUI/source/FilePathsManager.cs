@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AudioCutterUI
 {
-	internal class SoundCutterUIFilePathsManager
+	internal class FilePathsManager
 	{
 		public readonly Dictionary<string, ObservableFile> _files = new();
 		public readonly ObservableCollection<ObservableFile> _observableFiles = new();
@@ -31,9 +31,14 @@ namespace AudioCutterUI
 		{
 			_files[filePath].SetApi(api, id);
 		}
-		public void RemoveFilePath(string filePath) 
-		{ 
-			_files.Remove(filePath);
+		public void RemoveFilePath(ObservableFile observableFile)
+		{
+			var a = _files.FirstOrDefault(x => x.Value == observableFile).Key;
+			if (a != null)
+			{
+				_files.Remove(a);
+				_observableFiles.Remove(observableFile);
+			}
 		}
 	}
 }
