@@ -84,8 +84,7 @@ namespace AudioCutterUI
 			using FileStream file = File.Open($"{fileName}.json", FileMode.Create);
 			using StreamWriter fileStream = new(file);
 			 
-			fileStream.Write(json);
-			fileStream.Close();
+			fileStream.Write(json);			
 		}
 	}
 }
