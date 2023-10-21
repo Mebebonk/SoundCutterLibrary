@@ -23,40 +23,36 @@ using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Windows.Forms;
+using System.Security.Principal;
 
 namespace SoundCutterUI
 {
 	/// <summary>
 	/// Interaction logic for MainWindow.xaml
 	/// </summary>
+	[SettingReflector("settings")]
 	public partial class MainWindow : Window
 	{
-		private readonly FilePathsManager filePathManager;
+		private readonly FilePathsManager filePathManager = new();
 		private readonly CutterAPI _api = new();
 
+		[Setting]
+		private float _threshold = 0.2f;
 
-		[Settings<float>("threshold", 0.2f)]
-		public float _threshold;
+		[Setting]
+		private string _prefix = "new_";
 
-		[Settings<string>("prefix", "new_")]
-		public string _prefix;
-
-		[Settings<string>("outPath", "")]
-		public string _outPath;
+		[Setting]
+		private string _outPath = "";
 
 		public MainWindow()
 		{
 			InitializeComponent();
-
-			_prefix = GetType()!.GetField("_prefix")!.GetCustomAttribute<SettingsAttribute<string>>()!.Value;
-			_threshold = GetType()!.GetField("_threshold")!.GetCustomAttribute<SettingsAttribute<float>>()!.Value;
-			_outPath = GetType()!.GetField("_outPath")!.GetCustomAttribute<SettingsAttribute<string>>()!.Value;
+			GetType().GetCustomAttribute<SettingReflectorAttribute>().LoadSettings(this);
 
 			audioThreshold.Value = _threshold;
 			prefixBox.Text = _prefix;
-			outPathText.Text = _outPath; 
-
-			filePathManager = new FilePathsManager();
+			outPathText.Text = _outPath;
 			fileList.ItemsSource = filePathManager._observableFiles;
 		}
 
@@ -102,7 +98,7 @@ namespace SoundCutterUI
 						SelectFolder(sender, e);
 					}
 					string path = _outPath + "\\";
-					
+
 					filePathManager.LaunchFile(file, _api, _api.ProcessFile(file, path + newName, path + silentName, _threshold, filePathManager._files[file].UpdateProgress));
 				}
 			}
@@ -111,19 +107,7 @@ namespace SoundCutterUI
 
 		void MainWindow_Close(object sender, CancelEventArgs e)
 		{
-			SettingsAssistant settingsData = new()
-			{
-				prefix = _prefix,
-				threshold = _threshold,
-				outPath = _outPath
-			};
-
-			string json = JsonSerializer.Serialize(settingsData);
-			var file = File.Open("settings.json", FileMode.Create);
-			StreamWriter fileStream = new(file);
-			fileStream.Write(json);
-			fileStream.Close();
-
+			GetType().GetCustomAttribute<SettingReflectorAttribute>().SaveSettings(this);
 		}
 
 		private void PrefixBox_TextChanged(object sender, TextChangedEventArgs e)
