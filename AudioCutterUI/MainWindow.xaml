@@ -115,7 +115,7 @@
                         Visibility="Hidden"/>
                     <StackPanel Orientation="Vertical" Grid.Row="6">
                         <TextBlock Text="Выбери куда сохранить:"/>
-                        <TextBlock Name="outPathText"  Text="..." TextTrimming="WordEllipsis" Foreground="Gray"/>
+                        <TextBlock Name="outPathText" TextTrimming="WordEllipsis" Foreground="Gray"/>
                     </StackPanel>
                     <Button Grid.Column="2" 
                             Grid.Row="6" 

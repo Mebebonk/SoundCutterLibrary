@@ -33,8 +33,7 @@ namespace SoundCutterUI
 	[SettingReflector("settings")]
 	public partial class MainWindow : Window
 	{
-		private readonly FilePathsManager filePathManager = new();
-		private readonly CutterAPI _api = new();
+		private readonly FilePathsManager filePathManager;
 
 		[Setting]
 		private float _threshold = 0.2f;
@@ -43,66 +42,33 @@ namespace SoundCutterUI
 		private string _prefix = "new_";
 
 		[Setting]
-		private string _outPath = "";
-
+		private string _outPath = "...";
+		
 		public MainWindow()
 		{
 			InitializeComponent();
 			GetType().GetCustomAttribute<SettingReflectorAttribute>().LoadSettings(this);
+			filePathManager = new(UpdateMainProgress, UpdateOutPath);
 
 			audioThreshold.Value = _threshold;
 			prefixBox.Text = _prefix;
 			outPathText.Text = _outPath;
-			fileList.ItemsSource = filePathManager._observableFiles;
+			fileList.ItemsSource = filePathManager.Files;
 		}
 
 		private void SelectFolder(object sender, RoutedEventArgs e)
 		{
-			using var fbd = new FolderBrowserDialog();
-			fbd.SelectedPath = _outPath;
-			DialogResult result = fbd.ShowDialog();
-			if (result == System.Windows.Forms.DialogResult.OK)
-			{
-				_outPath = fbd.SelectedPath;
-				outPathText.Text = _outPath;
-			}
+			filePathManager.SelectFolder(ref _outPath);
 		}
 
 		private void SelectFiles(object sender, RoutedEventArgs e)
 		{
-			Microsoft.Win32.OpenFileDialog openFileDialog = new()
-			{
-				Multiselect = true,
-				Filter = "Audio|*.aac;*.mp3;*.wav"
-			};
-			if ((bool)openFileDialog.ShowDialog()) filePathManager.AddFilePaths(openFileDialog.FileNames, UpdateMainProgress);
-
+			filePathManager.SelectFiles();
 		}
 
 		private void StartProcessFiles(object sender, RoutedEventArgs e)
 		{
-			if (filePathManager._files.Keys.Count == 0)
-			{
-				System.Windows.Forms.MessageBox.Show("Добавь файлы");
-				return;
-			}
-			foreach (var file in filePathManager._files.Keys)
-			{
-				if (!filePathManager._files[file].IsFileRunning())
-				{
-					string oldName = file.Split('\\').Last();
-					string newName = _prefix + oldName;
-					string silentName = $"silent_{newName}";
-					while (_outPath == "")
-					{
-						SelectFolder(sender, e);
-					}
-					string path = _outPath + "\\";
-
-					filePathManager.LaunchFile(file, _api, _api.ProcessFile(file, path + newName, path + silentName, _threshold, filePathManager._files[file].UpdateProgress));
-				}
-			}
-
+			filePathManager.ProcessFiles(ref _outPath, _threshold, _prefix);
 		}
 
 		void MainWindow_Close(object sender, CancelEventArgs e)
@@ -129,19 +95,12 @@ namespace SoundCutterUI
 
 		private void UpdateMainProgress()
 		{
-			List<float> progresses = new();
-			foreach (var file in filePathManager._observableFiles)
-			{
-				progresses.Add(file.ProgressValue);
-			}
-			float summ = 0;
-			foreach (float a in progresses)
-			{
-				summ += a;
-			}
+			mainProgress.Value = filePathManager.GetTotalProgress(); 
+		}
 
-			mainProgress.Value = summ / progresses.Count;
-
+		private void UpdateOutPath()
+		{
+			outPathText.Text = _outPath;
 		}
 	}
 }
