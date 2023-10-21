@@ -29,3 +29,10 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore -c Release
+      - name: Upload artifact
+      - uses: actions/upload-artifact@v3      
+        with:
+          name: AudioCutter
+          path: |
+              bin/Release/net7.0-windows/*.dll             
+              bin/Release/net7.0-windows/*.exe
