@@ -30,7 +30,7 @@ jobs:
       - name: Build
         run: dotnet build --no-restore -c Release
       - name: Upload artifact
-      - uses: actions/upload-artifact@v3      
+        uses: actions/upload-artifact@v3      
         with:
           name: AudioCutter
           path: |
