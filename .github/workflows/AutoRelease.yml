@@ -29,8 +29,8 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
         
-      - name: Build
-        run: dotnet build --no-restore -c Release --os win-x64
+      - name: Publish
+        run: dotnet publish --no-restore -c Release
         
       - name: Upload artifact
         uses: actions/upload-artifact@v3      
