@@ -6,27 +6,7 @@ namespace SoundCutterCLI
     {
         static void Main(string[] args)
         {
-            CutterAPI api = new();
-			args = new string[3]
-			{
-				"REC20230902203639.mp3",
-				"test.wav",
-                "cut_test.wav"
-
-			};
-
-			ulong index = api.ProcessFile(args[0], args[1], args[2], 0.5f);
-
-            while (!api.IsCompleted(index))
-            {
-                Console.WriteLine(api.GetProgress(index));
-
-                Thread.Sleep(1000);
-            }
-
-			Console.WriteLine(1.0f);
-
-            api.Remove(index);
+           
 		}
     }
 }
