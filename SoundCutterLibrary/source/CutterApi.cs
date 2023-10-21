@@ -5,7 +5,7 @@ namespace SoundCutterLibrary
 {
 	public class CutterAPI
 	{
-		public ulong ProcessFile(string inputPath, string outputPath)
+		public ulong ProcessFile(string inputPath, string outputPath, string cutPath, float threshold, Action<float> callback)
 		{
 			WaveStream inputStream = new MediaFoundationReader(inputPath);
 			TaskInformation task = new
@@ -14,7 +14,9 @@ namespace SoundCutterLibrary
 				(
 					inputStream,
 					new WaveFileWriter(File.Open(outputPath, FileMode.Create), inputStream.WaveFormat),
-					new WaveFileWriter(File.Open($"cut_{outputPath}", FileMode.Create), inputStream.WaveFormat)
+					new WaveFileWriter(File.Open(cutPath, FileMode.Create), inputStream.WaveFormat),
+					threshold,
+					callback
 				)
 			);
 
@@ -31,11 +33,6 @@ namespace SoundCutterLibrary
 		public void Remove(ulong index)
 		{
 			_tasks.Remove(index, out TaskInformation _);
-		}
-
-		public float GetProgress(ulong index)
-		{
-			return _tasks[index].cutter.State;
 		}
 
 		private readonly ConcurrentDictionary<ulong, TaskInformation> _tasks = new();
