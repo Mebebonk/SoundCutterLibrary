@@ -25,15 +25,18 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 7.0.x
+          
       - name: Restore dependencies
         run: dotnet restore
+        
       - name: Build
         run: dotnet build --no-restore -c Release
+        
       - name: Upload artifact
         uses: actions/upload-artifact@v3      
         with:
           name: AudioCutter
           path: |
-              ${{ github.workspace }}\bin\Release\net7.0-windows\*.dll             
-              ${{ github.workspace }}\bin\Release\net7.0-windows\*.exe
+              ${{ github.workspace }}\AudiocutterUI\bin\Release\net7.0-windows\*.dll             
+              ${{ github.workspace }}\AudiocutterUI\bin\Release\net7.0-windows\*.exe
               
