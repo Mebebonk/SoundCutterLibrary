@@ -28,4 +28,4 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
-        run: dotnte build --no-restore
+        run: dotnet build --no-restore
