@@ -37,6 +37,6 @@ jobs:
         with:
           name: AudioCutter
           path: |
-              ${{ github.workspace }}\AudiocutterUI\bin\Release\net7.0-windows\*.dll             
-              ${{ github.workspace }}\AudiocutterUI\bin\Release\net7.0-windows\*.exe
+              ${{ github.workspace }}\AudiocutterUI\bin\Release\net7.0-windows\publish\*.dll             
+              ${{ github.workspace }}\AudiocutterUI\bin\Release\net7.0-windows\publish\*.exe
               
