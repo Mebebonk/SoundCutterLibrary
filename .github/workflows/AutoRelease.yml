@@ -30,7 +30,7 @@ jobs:
         run: dotnet restore
         
       - name: Build
-        run: dotnet build --no-restore -c Release -f net7.0 --os win-x64
+        run: dotnet build --no-restore -c Release --os win-x64
         
       - name: Upload artifact
         uses: actions/upload-artifact@v3      
