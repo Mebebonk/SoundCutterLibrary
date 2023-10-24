@@ -11,12 +11,12 @@ namespace SoundCutterLibrary
 		private readonly float _threshold;
 		private readonly Action<float> _callback;
 
-		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio, float threshold, Action<float> callback)
+		public AudioCutter(WaveStream audioInput, Stream audioOutput, Stream cutAudio, float threshold, float dbThreshold, Action<float> callback)
 		{
 			_audioInput = audioInput;
 			_audioOutput = audioOutput;
 			_cutAudio = cutAudio;
-			_threshold = (float)Math.Pow(10, (20 * Math.Log10(float.MaxValue) * (double)threshold) * 0.05);
+			_threshold = (float)Math.Pow(10, ((20 * Math.Log10(float.MaxValue)) - (dbThreshold * (1 - threshold))) / 20);
 			_callback = callback;
 		}
 
@@ -50,7 +50,7 @@ namespace SoundCutterLibrary
 
 						sample = sampleBuffer.FloatBuffer[i];
 
-						if (sample != sample)
+						if (float.IsNaN(sample))
 						{
 							midSignal += 0;
 						}

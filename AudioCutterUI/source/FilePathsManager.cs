@@ -69,7 +69,7 @@ namespace AudioCutterUI
 			return false;
 		}
 
-		public void ProcessFiles(ref string outPath, float threshold, string prefix)
+		public void ProcessFiles(ref string outPath, float threshold, float dbThreshold, string prefix)
 		{
 			if (_files.Count == 0)
 			{
@@ -88,7 +88,7 @@ namespace AudioCutterUI
 					}
 					string path = outPath + "\\";
 
-					LaunchFile(file, _api, _api.ProcessFile(file, path + newName, path + silentName, threshold, _files[file].UpdateProgress));
+					LaunchFile(file, _api, _api.ProcessFile(file, path + newName, path + silentName, threshold, dbThreshold, _files[file].UpdateProgress));
 				}
 			}
 		}

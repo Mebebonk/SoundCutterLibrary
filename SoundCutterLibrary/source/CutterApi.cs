@@ -5,7 +5,7 @@ namespace SoundCutterLibrary
 {
 	public class CutterAPI
 	{
-		public ulong ProcessFile(string inputPath, string outputPath, string cutPath, float threshold, Action<float> callback)
+		public ulong ProcessFile(string inputPath, string outputPath, string cutPath, float threshold, float dbThreshold, Action<float> callback)
 		{
 			WaveStream inputStream = new MediaFoundationReader(inputPath);
 			TaskInformation task = new
@@ -16,6 +16,7 @@ namespace SoundCutterLibrary
 					new WaveFileWriter(File.Open(outputPath, FileMode.Create), inputStream.WaveFormat),
 					new WaveFileWriter(File.Open(cutPath, FileMode.Create), inputStream.WaveFormat),
 					threshold,
+					dbThreshold,
 					callback
 				)
 			);
