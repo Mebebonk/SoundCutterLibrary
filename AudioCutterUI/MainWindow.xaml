@@ -58,7 +58,7 @@
                         HorizontalAlignment="Center"
                         IsMoveToPointEnabled="True"
                         AutoToolTipPrecision="2" AutoToolTipPlacement="TopLeft"
-                        TickFrequency="0.02"
+                        TickFrequency="0.04"
                         TickPlacement="TopLeft"
                         Margin="5"
                             ValueChanged="AudioThreshold_ValueChanged"/>

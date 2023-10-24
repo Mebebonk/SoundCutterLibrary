@@ -43,6 +43,9 @@ namespace SoundCutterUI
 
 		[Setting]
 		private string _outPath = "...";
+
+		[Setting]
+		private float _dbThreshold = 100;
 		
 		public MainWindow()
 		{
@@ -68,7 +71,7 @@ namespace SoundCutterUI
 
 		private void StartProcessFiles(object sender, RoutedEventArgs e)
 		{
-			filePathManager.ProcessFiles(ref _outPath, _threshold, _prefix);
+			filePathManager.ProcessFiles(ref _outPath, _threshold, _dbThreshold, _prefix);
 		}
 
 		void MainWindow_Close(object sender, CancelEventArgs e)
